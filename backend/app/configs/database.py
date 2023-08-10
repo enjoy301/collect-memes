@@ -3,6 +3,13 @@ from pymongo import MongoClient
 
 
 class MongoDB:
+    _instance = None
+
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super(MongoDB, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
         self.client = None
         self.db = None

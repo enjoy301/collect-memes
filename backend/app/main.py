@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from controllers import user_controller
 from configs.database import MongoDB
 from configs.env import load_env
 
@@ -18,4 +17,7 @@ def on_app_shutdown():
     db.close()
 
 
-app.include_router(user_controller.router)
+@app.get("/user")
+def get_user():
+    db.get_db().test.find()
+    return {"user": "user"}
