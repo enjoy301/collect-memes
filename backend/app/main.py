@@ -1,23 +1,28 @@
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 from fastapi import FastAPI
-from configs.database import MongoDB
-from configs.env import load_env
+from database import client
 
-load_env()
-app = FastAPI()
-db = MongoDB()
+from auth.router import router as auth_router
 
 
-@app.on_event("startup")
-def on_app_start():
-    db.connect()
+@asynccontextmanager
+async def lifespan(_application: FastAPI) -> AsyncGenerator:
+    # startup
+
+    yield
+
+    # shutdown
+    client.close()
+    print("Database connection closed.")
 
 
-@app.on_event("shutdown")
-def on_app_shutdown():
-    db.close()
+app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/user")
-def get_user():
-    db.get_db().test.find()
-    return {"user": "user"}
+@app.get("/healthcheck", include_in_schema=False)
+async def healthcheck() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
