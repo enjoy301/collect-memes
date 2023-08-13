@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database import client
 
 from feed.router import router as feed_router
@@ -19,6 +20,15 @@ async def lifespan(_application: FastAPI) -> AsyncGenerator:
 
 
 app = FastAPI(lifespan=lifespan)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/healthcheck", include_in_schema=False)
