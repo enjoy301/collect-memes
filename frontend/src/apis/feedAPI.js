@@ -10,7 +10,14 @@ export const feedAPI = createApi({
     getFeeds: builder.query({
       query: () => '/feeds/me',
     }),
+    addFeed: builder.mutation({
+      query: (body) => ({
+        url: '/feed',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useGetFeedsQuery } = feedAPI;
+export const { useGetFeedsQuery, useAddFeedMutation } = feedAPI;

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Thumbnail from '../components/Thumbnail';
 import Modal from '../components/Modal';
-import { setTrue } from '../stores/modalSlice';
+import { setText, openModal } from '../stores/modalSlice';
 import { useGetFeedsQuery } from '../apis/feedAPI';
 
 const HomePage = () => {
-  const isModalOpen = useSelector((state) => state.modal.value);
+  const { isModalOpen } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
   const { data, isSuccess } = useGetFeedsQuery();
 
@@ -18,9 +18,10 @@ const HomePage = () => {
 
   useEffect(() => {
     navigator.clipboard.readText().then((text) => {
-      console.log(text);
-
-      dispatch(setTrue());
+      if (text.startsWith('https://youtube.com/shorts')) {
+        dispatch(setText(text));
+        dispatch(openModal());
+      }
     });
   }, []);
 

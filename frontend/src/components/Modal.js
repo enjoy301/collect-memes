@@ -1,19 +1,35 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setFalse } from '../stores/modalSlice';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { closeModal } from '../stores/modalSlice';
 import YoutubeIcon from '../assets/images/youtube.png';
 import XButton from '../assets/images/x-button.png';
+import { useAddFeedMutation } from '../apis/feedAPI';
 
 const Modal = () => {
+  const { modalText } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
+  const [addFeed, { isSuccess }] = useAddFeedMutation();
 
   const handleSaveClick = () => {
-    console.log('click');
+    const urlObj = new URL(modalText);
+    const videoId = urlObj.pathname.split('/').pop();
+
+    addFeed({
+      provider: 'youtube',
+      link: modalText,
+      youtube_id: videoId,
+    });
   };
 
   const handleModalClose = () => {
-    dispatch(setFalse());
+    dispatch(closeModal());
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      window.location.reload();
+    }
+  }, [isSuccess]);
 
   return (
     <div className="fixed bottom-3 bg-white border w-11/12 h-16 rounded-[15px] flex items-center sm:w-96">
@@ -31,9 +47,7 @@ const Modal = () => {
           onClick={handleSaveClick}
         >
           <div className="text-base">Shorts 저장하기</div>
-          <div className="text-xs text-slate-600 truncate">
-            https://www.youtube.com/live/RjCG1LkLcEI?feature=share
-          </div>
+          <div className="text-xs text-slate-600 truncate">{modalText}</div>
         </button>
       </div>
       <button
