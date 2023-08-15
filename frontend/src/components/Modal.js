@@ -2,22 +2,19 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeModal } from '../stores/modalSlice';
 import YoutubeIcon from '../assets/images/youtube.png';
+import TiktokIcon from '../assets/images/tiktok.png';
 import XButton from '../assets/images/x-button.png';
 import { useAddFeedMutation } from '../apis/feedAPI';
 
 const Modal = () => {
-  const { modalText } = useSelector((state) => state.modal);
+  const { modalText, modalType } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
   const [addFeed, { isSuccess }] = useAddFeedMutation();
 
   const handleSaveClick = () => {
-    const urlObj = new URL(modalText);
-    const videoId = urlObj.pathname.split('/').pop();
-
     addFeed({
-      provider: 'youtube',
+      provider: modalType,
       link: modalText,
-      youtube_id: videoId,
     });
   };
 
@@ -31,12 +28,32 @@ const Modal = () => {
     }
   }, [isSuccess]);
 
+  const renderModalIcon = () => {
+    if (modalType === 'youtube') {
+      return YoutubeIcon;
+    }
+    if (modalType === 'tiktok') {
+      return TiktokIcon;
+    }
+    return '';
+  };
+
+  const renderModalHeader = () => {
+    if (modalType === 'youtube') {
+      return 'Shorts 저장하기';
+    }
+    if (modalType === 'tiktok') {
+      return 'TikTok 저장하기';
+    }
+    return '';
+  };
+
   return (
     <div className="fixed bottom-3 bg-white border w-11/12 h-16 rounded-[15px] flex items-center sm:w-96">
       <div className="basis-12 shirnk-0 pl-3">
         <img
           className="w-full h-full rounded-full"
-          src={YoutubeIcon}
+          src={renderModalIcon()}
           alt="youtube"
         />
       </div>
@@ -46,7 +63,7 @@ const Modal = () => {
           className="flex flex-col truncate"
           onClick={handleSaveClick}
         >
-          <div className="text-base">Shorts 저장하기</div>
+          <div className="text-base">{renderModalHeader()}</div>
           <div className="text-xs text-slate-600 truncate">{modalText}</div>
         </button>
       </div>

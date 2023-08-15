@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Thumbnail from '../components/Thumbnail';
 import Modal from '../components/Modal';
-import { setText, openModal } from '../stores/modalSlice';
+import { setText, openModal, setModalType } from '../stores/modalSlice';
 import { useGetFeedsQuery } from '../apis/feedAPI';
 
 const HomePage = () => {
@@ -12,13 +12,20 @@ const HomePage = () => {
 
   const renderFeeds = (feeds) => {
     return feeds.map((feed) => (
-      <Thumbnail key={feed.id} link={feed.link} youtubeId={feed.youtube_id} />
+      <Thumbnail key={feed.id} link={feed.link} videoId={feed.video_id} />
     ));
   };
 
   useEffect(() => {
     navigator.clipboard.readText().then((text) => {
       if (text.startsWith('https://youtube.com/shorts')) {
+        dispatch(setModalType('youtube'));
+
+        dispatch(setText(text));
+        dispatch(openModal());
+      } else if (text.startsWith('https://www.tiktok.com/')) {
+        dispatch(setModalType('tiktok'));
+
         dispatch(setText(text));
         dispatch(openModal());
       }
