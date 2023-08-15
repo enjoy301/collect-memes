@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class Feed(BaseModel):
     provider: str
     link: str
-    youtube_id: str
+    video_id: str | None = None
 
 
 class FeedInDB(Feed):

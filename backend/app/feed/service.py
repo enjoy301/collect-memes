@@ -14,6 +14,10 @@ async def get_feeds() -> list[FeedInDB]:
 
 
 async def create_feed(feed: Feed) -> FeedInDB:
+    if feed.provider is "youtube":
+        url_parts = feed.url.split("/")
+        feed.video_id = url_parts[-1].split("?")[0]
+
     _id = database.get_collection("feed").insert_one(feed.model_dump()).inserted_id
 
     feed = FeedInDB(**feed.model_dump(), id=str(_id))
