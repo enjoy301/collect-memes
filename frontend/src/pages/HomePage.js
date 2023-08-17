@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import Header from '../components/Header';
 import Thumbnail from '../components/Thumbnail';
 import Modal from '../components/Modal';
+
 import { setText, openModal, setModalType } from '../stores/modalSlice';
 import { useGetFeedsQuery } from '../apis/feedAPI';
 
@@ -33,11 +36,14 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="w-100 px-2 pt-4 flex justify-center">
-      <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
-        {isSuccess && renderFeeds(data)}
+    <div className="w-100 flex flex-col">
+      <Header />
+      <div className="w-100 px-2 pt-4 sm:pt-[96px] flex justify-center">
+        <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
+          {isSuccess && renderFeeds(data)}
+        </div>
+        {isModalOpen && <Modal />}
       </div>
-      {isModalOpen && <Modal />}
     </div>
   );
 };
