@@ -17,7 +17,14 @@ export const feedAPI = createApi({
         body,
       }),
     }),
+    likeFeed: builder.mutation({
+      query: ({ id, isLike }) => ({
+        url: `/feed/${id}/like?is_like=${isLike}`,
+        method: 'PUT',
+      }),
+    }),
   }),
 });
 
-export const { useGetFeedsQuery, useAddFeedMutation } = feedAPI;
+export const { useGetFeedsQuery, useAddFeedMutation, useLikeFeedMutation } =
+  feedAPI;

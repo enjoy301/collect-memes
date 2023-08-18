@@ -15,7 +15,13 @@ const HomePage = () => {
 
   const renderFeeds = (feeds) => {
     return feeds.map((feed) => (
-      <Thumbnail key={feed.id} link={feed.link} videoId={feed.video_id} />
+      <Thumbnail
+        key={feed.id}
+        id={feed.id}
+        link={feed.link}
+        videoId={feed.video_id}
+        isLike={feed.is_like}
+      />
     ));
   };
 
