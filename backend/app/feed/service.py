@@ -1,7 +1,7 @@
 from database import database
 from bson.objectid import ObjectId
 
-from feed.schemas import Feed, FeedInDB
+from feed.schemas import Feed, FeedInDB, FeedLike
 
 
 async def get_feeds() -> list[FeedInDB]:
@@ -27,3 +27,13 @@ async def create_feed(feed: Feed) -> FeedInDB:
 
 async def delete_feed(feed_id: str) -> None:
     database.get_collection("feed").delete_one({"_id": ObjectId(feed_id)})
+
+
+async def like_feed(feed_id: str, is_like: bool) -> FeedLike:
+    feed = database.get_collection("feed").find_one({"_id": ObjectId(feed_id)})
+    feed["is_like"] = True if is_like else False
+    database.get_collection("feed").update_one(
+        {"_id": ObjectId(feed_id)}, {"$set": feed}
+    )
+
+    return FeedLike(id=feed_id, is_like=feed["is_like"])

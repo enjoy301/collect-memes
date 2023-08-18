@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from feed import service
-from feed.schemas import Feed, FeedInDB
+from feed.schemas import Feed, FeedInDB, FeedLike
 
 router = APIRouter()
 
@@ -21,3 +21,9 @@ async def create_feed(feed: Feed) -> FeedInDB:
 @router.delete("/feed/{feed_id}")
 async def delete_feed(feed_id: str) -> None:
     await service.delete_feed(feed_id)
+
+
+@router.put("/feed/{feed_id}/like")
+async def like_feed(feed_id: str, is_like: bool) -> FeedLike:
+    updated_feed = await service.like_feed(feed_id, is_like)
+    return updated_feed
