@@ -19,7 +19,7 @@ const HomePage = () => {
         key={feed.id}
         id={feed.id}
         link={feed.link}
-        videoId={feed.video_id}
+        thumbnailUrl={feed.object_url}
         isLike={feed.is_like}
       />
     ));

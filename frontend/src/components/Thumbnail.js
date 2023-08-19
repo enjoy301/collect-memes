@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { useLazyGetThumbnailQuery } from '../apis/tiktokAPI';
 import { useLikeFeedMutation } from '../apis/feedAPI';
 
 import ImageSkeleton from './ImageSkeleton';
@@ -8,32 +7,18 @@ import ImageSkeleton from './ImageSkeleton';
 import EmptyHeart from '../assets/images/empty_heart.png';
 import FilledHeart from '../assets/images/filled_heart.png';
 
-const Thumbnail = ({ id, link, videoId, isLike }) => {
-  const [src, setSrc] = useState('');
+const Thumbnail = ({ id, link, thumbnailUrl, isLike }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(isLike);
 
-  const [getThumbnail, { data, isSuccess }] = useLazyGetThumbnailQuery();
   const [pushLike, { data: likeData, isSuccess: isLikeSucceess }] =
     useLikeFeedMutation();
 
   useEffect(() => {
-    if (link.startsWith('https://youtube.com/shorts')) {
-      setSrc(`https://i.ytimg.com/vi/${videoId}/oar2.jpg`);
-    } else if (link.startsWith('https://www.tiktok.com/')) {
-      getThumbnail(link);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess) {
-      setSrc(data);
-    }
-
     if (isLikeSucceess) {
       setIsLiked(likeData.is_like);
     }
-  }, [isSuccess, isLikeSucceess]);
+  }, [isLikeSucceess]);
 
   const handleClick = () => {
     window.open(link, '_blank');
@@ -55,7 +40,7 @@ const Thumbnail = ({ id, link, videoId, isLike }) => {
           className={`rounded-2xl group-hover:brightness-50${
             isLoading ? ' hidden' : ''
           }`}
-          src={src}
+          src={thumbnailUrl}
           alt={link}
           onLoad={handleImageLoad}
         />
