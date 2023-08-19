@@ -5,7 +5,7 @@ from s3 import upload_fileobj
 from config import settings
 
 from feed.schemas import Feed, FeedInDB, FeedLike
-from feed.utils import get_youtube_thumbnail
+from feed.utils import get_youtube_thumbnail, get_tiktok_thumbnail
 
 
 async def get_feeds() -> list[FeedInDB]:
@@ -22,6 +22,9 @@ async def create_feed(feed: Feed) -> FeedInDB:
 
     if feed.provider == "youtube":
         fileobj = get_youtube_thumbnail(feed.link)
+        upload_fileobj(fileobj, f"feed/{id}.jpg")
+    elif feed.provider == "tiktok":
+        fileobj = get_tiktok_thumbnail(feed.link)
         upload_fileobj(fileobj, f"feed/{id}.jpg")
 
     database.get_collection("feed").update_one(
