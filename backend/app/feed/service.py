@@ -1,7 +1,11 @@
 from database import database
 from bson.objectid import ObjectId
 
+from s3 import upload_fileobj
+from config import settings
+
 from feed.schemas import Feed, FeedInDB, FeedLike
+from feed.utils import get_youtube_thumbnail
 
 
 async def get_feeds() -> list[FeedInDB]:
@@ -14,15 +18,24 @@ async def get_feeds() -> list[FeedInDB]:
 
 
 async def create_feed(feed: Feed) -> FeedInDB:
-    if feed.provider is "youtube":
-        url_parts = feed.url.split("/")
-        feed.video_id = url_parts[-1].split("?")[0]
+    id = str(database.get_collection("feed").insert_one(feed.model_dump()).inserted_id)
 
-    _id = database.get_collection("feed").insert_one(feed.model_dump()).inserted_id
+    if feed.provider == "youtube":
+        fileobj = get_youtube_thumbnail(feed.link)
+        upload_fileobj(fileobj, f"feed/{id}.jpg")
 
-    feed = FeedInDB(**feed.model_dump(), id=str(_id))
+    database.get_collection("feed").update_one(
+        {"_id": ObjectId(id)},
+        {"$set": {"object_url": f"{settings.AWS_S3_BUCKET_URL}/feed/{id}.jpg"}},
+    )
 
-    return feed
+    feedInDB = FeedInDB(
+        **feed.model_dump(),
+        id=id,
+        object_url=f"{settings.AWS_S3_BUCKET_URL}/feed/{id}.jpg",
+    )
+
+    return feedInDB
 
 
 async def delete_feed(feed_id: str) -> None:

@@ -5,11 +5,11 @@ class Feed(BaseModel):
     provider: str
     link: str
     is_like: bool | None = False
-    video_id: str | None = None
 
 
 class FeedInDB(Feed):
     id: str
+    object_url: str | None = None
 
 
 class FeedLike(BaseModel):
