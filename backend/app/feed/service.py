@@ -1,6 +1,6 @@
+from copy import deepcopy
 from database import database
 from bson.objectid import ObjectId
-from copy import deepcopy
 
 from s3 import upload_fileobj
 from config import settings
@@ -10,7 +10,7 @@ from feed.utils import get_youtube_thumbnail, get_tiktok_thumbnail, get_image_si
 
 
 async def get_feeds() -> list[FeedInDB]:
-    result = list(database.get_collection("feed").find())
+    result = list(database.get_collection("feed").find(sort=[("_id", -1)]))
 
     for feed in result:
         feed["id"] = str(feed["_id"])
