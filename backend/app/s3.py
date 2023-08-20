@@ -13,5 +13,8 @@ client = boto3.client(
 
 def upload_fileobj(fileobj: BytesIO, key: str):
     client.upload_fileobj(
-        fileobj, "collect-memes", key, ExtraArgs={"ACL": "public-read"}
+        fileobj,
+        "collect-memes",
+        key,
+        ExtraArgs={"ACL": "public-read"},
     )

@@ -9,7 +9,9 @@ class Feed(BaseModel):
 
 class FeedInDB(Feed):
     id: str
-    object_url: str | None = None
+    object_url: str
+    width: int
+    height: int
 
 
 class FeedLike(BaseModel):

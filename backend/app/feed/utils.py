@@ -1,6 +1,7 @@
 from urllib import request
 from io import BytesIO
 import json
+from PIL import Image
 
 
 def get_youtube_thumbnail(url: str) -> BytesIO:
@@ -18,10 +19,14 @@ def get_tiktok_thumbnail(url: str) -> BytesIO:
     request_url = f"https://www.tiktok.com/oembed?url={url}"
     response = request.urlopen(request_url).read()
 
-    print(response)
-
     # 2. 가져온 url로 요청을 보내서 이미지를 가져온다.
     img_url = json.loads(response)["thumbnail_url"]
     response = request.urlopen(img_url).read()
 
     return BytesIO(response)
+
+
+def get_image_size(fileobj: BytesIO) -> tuple[int, int]:
+    image = Image.open(fileobj)
+
+    return image.size
