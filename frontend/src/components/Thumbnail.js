@@ -33,11 +33,11 @@ const Thumbnail = ({ id, link, thumbnailUrl, isLike }) => {
   };
 
   return (
-    <div className="pb-4 w-full sm:w-60 group relative">
-      <button className="w-full sm:w-60" type="button" onClick={handleClick}>
+    <div className="sm:pb-4 w-full sm:w-[236px] group relative">
+      <button className="w-full" type="button" onClick={handleClick}>
         {isLoading && <ImageSkeleton />}
         <img
-          className={`rounded-2xl group-hover:brightness-50${
+          className={`w-full rounded-2xl group-hover:brightness-50${
             isLoading ? ' hidden' : ''
           }`}
           src={thumbnailUrl}
